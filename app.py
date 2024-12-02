@@ -28,22 +28,23 @@ def colored_pencil_filter(img, ksize=5):
     colored_sketch = cv2.bitwise_and(bilateral, edges_colored)
     return colored_sketch
 
-# Streamlit Web App
+# Streamlit App UI
 st.title("Image to Pencil Sketch Tool")
-st.write("Upload an image and apply various filters!")
+st.write("Upload an image and apply different sketch filters!")
 
 # Upload image
 uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 if uploaded_file is not None:
     img = np.array(Image.open(uploaded_file))
+    st.image(img, caption="Original Image", use_column_width=True)
 
-    # Select filter type
+    # Filter selection
     filter_type = st.sidebar.selectbox(
-        "Choose a filter",
+        "Select a filter",
         ("Pencil Sketch", "Charcoal", "Colored Pencil")
     )
 
-    # Add sliders for customization
+    # Apply the selected filter
     if filter_type == "Pencil Sketch":
         blur_ksize = st.sidebar.slider("Blur Kernel Size", 1, 51, 21, 2)
         scale = st.sidebar.slider("Scale", 100, 300, 256, 10)
@@ -58,11 +59,10 @@ if uploaded_file is not None:
         result = colored_pencil_filter(cv2.cvtColor(img, cv2.COLOR_RGB2BGR), ksize)
         cmap = None
 
-    # Display results
-    st.image(img, caption="Original Image", use_column_width=True)
-    st.image(result, caption=f"{filter_type} Filter", use_column_width=True, channels="RGB" if cmap is None else "GRAY")
+    # Show the filtered image
+    st.image(result, caption=f"{filter_type} Effect", use_column_width=True, channels="RGB" if cmap is None else "GRAY")
 
-    # Download option
+    # Download filtered image
     result_image = Image.fromarray(result if cmap is None else cv2.cvtColor(result, cv2.COLOR_GRAY2RGB))
     result_image.save("filtered_image.png")
     st.download_button(
@@ -71,3 +71,4 @@ if uploaded_file is not None:
         file_name="filtered_image.png",
         mime="image/png"
     )
+    
