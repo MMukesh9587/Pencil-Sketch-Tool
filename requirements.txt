@@ -1,4 +1,5 @@
+pip==24.3.1
 streamlit==1.25.0
 opencv-python-headless==4.8.1.78
 numpy==1.26.0
-Pillow==9.5.0 --no-binary pillow
+Pillow<10,>=7.1.0 --no-binary pillow
